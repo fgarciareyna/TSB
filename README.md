@@ -57,4 +57,4 @@ Además de la evidente evaluación de resultados correctos y funcionamiento de a
 
 ## Libros
 
-[The Project Gutenberg EBook of Angelina, by Rafael Delgado](TSB/blob/master/TSB/Libros%20%5BTP%20Unico%20TSB%202014%5D/16082-8.txt)
+[The Project Gutenberg EBook of Angelina, by Rafael Delgado](TSB/Libros\ \[TP\ Unico\ TSB\ 2014\]/16082-8.txt)
