@@ -1,7 +1,7 @@
 # TSB
-**TP de TSB**
+###TP de TSB
 
-***Trabajo Práctico Único: Creación de un Vocabulario
+**Trabajo Práctico Único: Creación de un Vocabulario**
 
 *Fecha de entrega: lunes, 7 de noviembre de 2016, 23:55*
 
