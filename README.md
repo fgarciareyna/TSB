@@ -55,3 +55,6 @@ Además de la evidente evaluación de resultados correctos y funcionamiento de a
 
 -   La nota máxima alcanzada al presentar el trabajo sin la implementación del punto bonus será 8(ocho) y con la implementación del punto bonus la nota máxima  será de 10(diez).
 
+## Libros
+
+[The Project Gutenberg EBook of Angelina, by Rafael Delgado](TSB/blob/master/TSB/Libros%20%5BTP%20Unico%20TSB%202014%5D/16082-8.txt)
