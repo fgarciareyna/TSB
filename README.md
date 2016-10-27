@@ -57,7 +57,7 @@ Además de la evidente evaluación de resultados correctos y funcionamiento de a
 
 ## Libros
 
-[The Project Gutenberg EBook of Angelina, by Rafael Delgado](TSB/Libros\ \[TP\ Unico\ TSB\ 2014\]/16082-8.txt)
-[The Project Gutenberg EBook of Amistad funesta, by José Martí](TSB/Libros\ \[TP\ Unico\ TSB\ 2014\]/18166-8.txt)
-[The Project Gutenberg EBook of La niña robada, by Hendrik Conscience](TSB/Libros\ \[TP\ Unico\ TSB\ 2014\]/22975-8.txt)
-[The Project Gutenberg EBook of Juvenilla; Prosa ligera, by Miguel Cané](TSB/Libros\ \[TP\ Unico\ TSB\ 2014\]/41575-8.txt)
+* [The Project Gutenberg EBook of Angelina, by Rafael Delgado](TSB/Libros\ \[TP\ Unico\ TSB\ 2014\]/16082-8.txt)
+* [The Project Gutenberg EBook of Amistad funesta, by José Martí](TSB/Libros\ \[TP\ Unico\ TSB\ 2014\]/18166-8.txt)
+* [The Project Gutenberg EBook of La niña robada, by Hendrik Conscience](TSB/Libros\ \[TP\ Unico\ TSB\ 2014\]/22975-8.txt)
+* [The Project Gutenberg EBook of Juvenilla; Prosa ligera, by Miguel Cané](TSB/Libros\ \[TP\ Unico\ TSB\ 2014\]/41575-8.txt)
