@@ -1,9 +1,9 @@
 # TSB
-TP de TSB
+###TP de TSB
 
-Trabajo Práctico Único: Creación de un Vocabulario
+**Trabajo Práctico Único: Creación de un Vocabulario**
 
-Fecha de entrega: lunes, 7 de noviembre de 2016, 23:55
+*Fecha de entrega: lunes, 7 de noviembre de 2016, 23:55*
 
 •  Enunciado:
 
@@ -55,3 +55,9 @@ Además de la evidente evaluación de resultados correctos y funcionamiento de a
 
 -   La nota máxima alcanzada al presentar el trabajo sin la implementación del punto bonus será 8(ocho) y con la implementación del punto bonus la nota máxima  será de 10(diez).
 
+## Libros
+
+* [The Project Gutenberg EBook of Angelina, by Rafael Delgado](TSB/Libros\ \[TP\ Unico\ TSB\ 2014\]/16082-8.txt)
+* [The Project Gutenberg EBook of Amistad funesta, by José Martí](TSB/Libros\ \[TP\ Unico\ TSB\ 2014\]/18166-8.txt)
+* [The Project Gutenberg EBook of La niña robada, by Hendrik Conscience](TSB/Libros\ \[TP\ Unico\ TSB\ 2014\]/22975-8.txt)
+* [The Project Gutenberg EBook of Juvenilla; Prosa ligera, by Miguel Cané](TSB/Libros\ \[TP\ Unico\ TSB\ 2014\]/41575-8.txt)
