@@ -12,25 +12,17 @@ public class SimpleList<E extends Comparable> implements Iterable<E> {
         frente = null;
         cantidad = 0;
     }
-
-    public void add(int index, E x) {
-        if (index < 0 || index > size()) {
-            throw new IndexOutOfBoundsException("Indice fuera del rango");
+    
+    public E get(E x) {
+        if (x == null) {
+            return null;
         }
-
-        Node<E> nuevo = new Node<>(x, frente);
-        if (index == 0) {
-            frente = nuevo;
-        } else {
-            Node<E> p = frente;
-            for (int i = 0; i < index - 1; i++) {
-                p = p.getNext();
+        for (Node<E> p = frente; p != null; p = p.getNext()) {
+            if (x.compareTo(p.getInfo()) == 0) {
+                return p.getInfo();
             }
-            nuevo.setNext(p.getNext());
-            p.setNext(nuevo);
         }
-
-        cantidad++;
+        return null;
     }
 
     public void addFirst(E x) {
@@ -44,98 +36,6 @@ public class SimpleList<E extends Comparable> implements Iterable<E> {
         cantidad++;
     }
 
-    public void addInOrder(E x) {
-        Node<E> nuevo = new Node<>(x, null);
-        Node<E> p = frente, q = null;
-        while (p != null && x.compareTo(p.getInfo()) >= 0) {
-            q = p;
-            p = p.getNext();
-        }
-        nuevo.setNext(p);
-        if (q != null) {
-            q.setNext(nuevo);
-        } else {
-            frente = nuevo;
-        }
-
-        cantidad++;
-    }
-
-    public void addLast(E x) {
-        if (x == null) {
-            return;
-        }
-
-        Node<E> nuevo = new Node<>(x, null);
-        Node<E> p = frente, q = null;
-        while (p != null) {
-            q = p;
-            p = p.getNext();
-        }
-        if (q != null) {
-            q.setNext(nuevo);
-        } else {
-            frente = nuevo;
-        }
-
-        cantidad++;
-    }
-
-    public void clear() {
-        frente = null;
-        cantidad = 0;
-    }
-
-    public boolean contains(E x) {
-        Node<E> p = frente;
-        while (p != null && x.compareTo(p.getInfo()) != 0) {
-            p = p.getNext();
-        }
-        return (p != null);
-    }
-
-    public E get(int index) {
-        if (index < 0 || index >= size()) {
-            throw new IndexOutOfBoundsException("Indice fuera del rango");
-        }
-
-        Node<E> p = frente;
-        for (int i = 0; i < index; i++) {
-            p = p.getNext();
-        }
-        return p.getInfo();
-    }
-
-    public E getFirst() {
-        if (frente == null) {
-            throw new NoSuchElementException("Error: la lista esta vacia...");
-        }
-        return frente.getInfo();
-    }
-
-    public E getLast() {
-        if (frente == null) {
-            throw new NoSuchElementException("Error: la lista esta vacia...");
-        }
-        Node<E> p = frente, q = null;
-        while (p != null) {
-            q = p;
-            p = p.getNext();
-        }
-        return (E) ((q != null) ? q.getInfo() : frente.getInfo());
-    }
-
-    public int indexOf(E x) {
-        int c = 0;
-        for (Node<E> p = frente; p != null; p = p.getNext()) {
-            if (x.compareTo(p.getInfo()) == 0) {
-                return c;
-            }
-            c++;
-        }
-        return -1;
-    }
-
     public boolean isEmpty() {
         return (frente == null);
     }
@@ -145,109 +45,6 @@ public class SimpleList<E extends Comparable> implements Iterable<E> {
         return new SimpleListIterator();
     }
 
-    public boolean remove(E x) {
-        Node<E> p = frente, q = null;
-        while (p != null && x.compareTo(p.getInfo()) != 0) {
-            q = p;
-            p = p.getNext();
-        }
-
-        if (p == null) {
-            return false;
-        }
-        if (q == null) {
-            frente = p.getNext();
-        } else {
-            q.setNext(p.getNext());
-        }
-
-        cantidad--;
-        return true;
-    }
-
-    public E remove(int index) {
-        if (index < 0 || index >= size()) {
-            throw new IndexOutOfBoundsException("Indice fuera del rango");
-        }
-
-        Node<E> p = frente, q = null;
-        for (int i = 0; i < index; i++) {
-            q = p;
-            p = p.getNext();
-        }
-
-        E x = p.getInfo();
-        if (q == null) {
-            frente = p.getNext();
-        } else {
-            q.setNext(p.getNext());
-        }
-
-        cantidad--;
-        return x;
-    }
-
-    public E removeLast() {
-        if (frente == null) {
-            throw new NoSuchElementException("Error: la lista esta vacia...");
-        }
-
-        Node<E> p = frente, q = null;
-        while (p.getNext() != null) {
-            q = p;
-            p = p.getNext();
-        }
-        E x = p.getInfo();
-        if (q != null) {
-            q.setNext(p.getNext());
-        } else {
-            frente = p.getNext();
-        }
-
-        cantidad--;
-        return x;
-    }
-
-    public E removeFirst() {
-        if (frente == null) {
-            throw new NoSuchElementException("Error: la lista esta vacia...");
-        }
-
-        E x = frente.getInfo();
-        frente = frente.getNext();
-
-        cantidad--;
-        return x;
-    }
-
-    public boolean removeFirstOccurrence(E x) {
-        return remove(x);
-    }
-
-    public E search(E x) {
-        for (Node<E> p = frente; p != null; p = p.getNext()) {
-            if (x.compareTo(p.getInfo()) == 0) {
-                return p.getInfo();
-            }
-        }
-        return null;
-    }
-
-    public E set(int index, E x) {
-        if (index < 0 || index >= size()) {
-            throw new NoSuchElementException("Indice fuera del rango");
-        }
-
-        Node<E> p = frente;
-        for (int i = 0; i < index; i++) {
-            p = p.getNext();
-        }
-
-        E ant = p.getInfo();
-        p.setInfo(x);
-        return ant;
-    }
-
     public int size() {
         return cantidad;
     }
@@ -255,16 +52,17 @@ public class SimpleList<E extends Comparable> implements Iterable<E> {
     @Override
     public String toString() {
         Node<E> p = frente;
-        String res = "[";
+        StringBuilder res = new StringBuilder();
+        res.append("[");
         while (p != null) {
-            res = res + p.toString();
+            res.append(p.toString());
             if (p.getNext() != null) {
-                res = res + ", ";
+                res.append(", ");
             }
             p = p.getNext();
         }
-        res = res + "]";
-        return res;
+        res.append("]");
+        return res.toString();
     }
 
     private class SimpleListIterator implements Iterator<E> {

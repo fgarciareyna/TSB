@@ -1,10 +1,10 @@
 package interfaz;
 
-import soporte.Parser;
-
-
 public class Principal {
     public static void main(String[] args) {
-        Parser p = new Parser ("¡Hola!, ¿Cómo va?.\n¿Esto es una loñcura!!?");
+        FrameEditor frame = new FrameEditor();
+        frame.setVisible(true);
+    
+        //Archivo p = new Archivo ("Titulo", "¡Hola!, ¿Cómo va?.\n¿Esto es una loñcura!!?");
     }
 }

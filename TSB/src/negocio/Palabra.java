@@ -4,17 +4,12 @@ import java.io.*;
 
 public class Palabra implements Comparable<Palabra>, Serializable {
 
-    private String palabra;
+    private final String palabra;
     private int cantidad;
 
     public Palabra(String p) {
         palabra = p;
         cantidad = 1;
-    }
-
-    public Palabra(String p, int c) {
-        palabra = p;
-        cantidad = c;
     }
 
     public String getPalabra() {
@@ -24,14 +19,6 @@ public class Palabra implements Comparable<Palabra>, Serializable {
     public int getCantidad() {
         return cantidad;
     }
-
-    public void setPalabra(String p) {
-        palabra = p;
-    }
-
-    public void setCantidad(int c) {
-        cantidad = c;
-    }
     
     public void sumar() {
         cantidad += 1;
@@ -39,7 +26,7 @@ public class Palabra implements Comparable<Palabra>, Serializable {
 
     @Override
     public String toString() {
-        return palabra;
+        return palabra + ": " + cantidad;
     }
 
     @Override

@@ -24,33 +24,19 @@ public class HashTable<E extends Comparable> implements Serializable {
         cantidad = 0;
     }
 
-    public int get(E x) {
-        if (x == null) {
-            return -1;
-        }
-
-        //int k = x.hashCode();
-        int y = h(x);
-
-        if (items[y].contains(x)) {
-            return y;
-        } else {
-            return -1;
-        }
-    }
-
     public boolean isEmpty() {
         return (cantidad == 0);
     }
-
-    public boolean contains(E x) {
+    
+    public E get(E x) {
         if (x == null) {
-            return false;
+            return null;
         }
-
-        //int k = x.hashCode();
         int y = h(x);
-        return items[y].contains(x);
+        if (items[y].isEmpty()) {
+            return null;
+        }
+        return items[y].get(x);
     }
 
     public boolean put(E x) {
@@ -62,30 +48,10 @@ public class HashTable<E extends Comparable> implements Serializable {
             rehash();
         }
 
-        //int k = x.hashCode();
         int y = h(x);
-
-        if (items[y].contains(x)) {
-            return false;
-        }
-
         items[y].addFirst(x);
         cantidad++;
         return true;
-    }
-
-    public boolean remove(E x) {
-        if (x == null) {
-            return false;
-        }
-
-        //int k = x.hashCode();
-        int y = h(x);
-        boolean ok = items[y].remove(x);
-        if (ok) {
-            cantidad--;
-        }
-        return ok;
     }
 
     @Override
