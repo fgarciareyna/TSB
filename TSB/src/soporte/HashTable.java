@@ -1,8 +1,11 @@
 package soporte;
 
 import java.io.*;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-public class HashTable<E extends Comparable> implements Serializable {
+public class HashTable<E extends Comparable> 
+        implements Serializable, Iterable<E> {
 
     private SimpleList<E>[] items;
     private int cantidad;
@@ -124,5 +127,62 @@ public class HashTable<E extends Comparable> implements Serializable {
 
     private int averageLength() {
         return cantidad / items.length;
+    }
+    
+    @Override
+    public Iterator<E> iterator() {
+        return new HashTableIterator();
+    }
+    
+    private class HashTableIterator implements Iterator<E> {
+
+        private int pos;
+        private int contados;
+        private Iterator<E> it;
+
+        public HashTableIterator() {
+            pos = 0;
+            contados = 0;
+            it = null;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (contados >= cantidad) {
+                return false;
+            }
+            if (it == null) {
+                return true;
+            }
+            Iterator<E> tempIt = it;
+            int tempPos = pos;
+            while (!tempIt.hasNext() && tempPos < items.length) {
+                tempPos++;
+                tempIt = items[tempPos].iterator();
+            }
+            return tempIt.hasNext();
+        }
+
+        @Override
+        public E next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("No quedan elementos");
+            }
+
+            if (it == null) {
+                it = items[pos].iterator();
+            }
+            while (!it.hasNext()) {
+                pos++;
+                it = items[pos].iterator();
+            }
+            contados++;
+            return it.next();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("No se permite remover");
+        }
     }
 }

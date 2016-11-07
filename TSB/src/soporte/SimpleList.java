@@ -68,13 +68,9 @@ public class SimpleList<E extends Comparable> implements Iterable<E> {
     private class SimpleListIterator implements Iterator<E> {
 
         private Node<E> actual;
-        private Node<E> previo;
-        private boolean next_invocado;
 
         public SimpleListIterator() {
             actual = null;
-            previo = null;
-            next_invocado = false;
         }
 
         @Override
@@ -88,35 +84,20 @@ public class SimpleList<E extends Comparable> implements Iterable<E> {
         @Override
         public E next() {
             if (!hasNext()) {
-                throw new NoSuchElementException("No quedan elementos por recorrer");
+                throw new NoSuchElementException("No quedan elementos");
             }
 
             if (actual == null) {
                 actual = frente;
             } else {
-                previo = actual;
                 actual = actual.getNext();
             }
-            next_invocado = true;
-
             return actual.getInfo();
         }
 
         @Override
         public void remove() {
-            if (!next_invocado) {
-                throw new IllegalStateException("Debe invocar a next() antes de remove()...");
-            }
-
-            if (previo == null) {
-                frente = actual.getNext();
-            } else {
-                previo.setNext(actual.getNext());
-            }
-
-            actual = previo;
-            next_invocado = false;
-            cantidad--;
+            throw new UnsupportedOperationException("No se permite remover");
         }
     }
 }

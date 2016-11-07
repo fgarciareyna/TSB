@@ -6,6 +6,7 @@
 package negocio;
 
 import java.io.*;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import soporte.HashTable;
@@ -24,15 +25,15 @@ public class TextFile {
         this.palabras = new HashTable<>(101);
     }
 
-    public HashTable<Palabra> getPalabras() {
-        return palabras;
+    public Iterator<Palabra> getPalabras() {
+        return palabras.iterator();
     }
 
     public String getPath() {
         return file.getAbsolutePath();
     }
 
-    public void readFile() {
+    public void procesar() {
         String patron = "([^a-záéíóúüñ0-9]*)([a-záéíóúüñ]+)([^a-záéíóúüñ0-9]*)";
         Pattern pat = Pattern.compile(patron);
         Matcher mat;
@@ -61,7 +62,6 @@ public class TextFile {
                             }
                         }
                         palabras.put(p);
-                        //System.out.println(palabra);
                     }
                 }
                 linea = br.readLine();
