@@ -16,6 +16,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.SwingWorker;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import negocio.Palabra;
@@ -51,6 +53,29 @@ public class FrameEditor extends javax.swing.JFrame {
                     "No se encontró el driver: " + ex.getMessage());
         }
         TableWorker worker = new TableWorker(jtbPalabras, "");
+        worker.execute();
+        jtfFiltro.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                actualizarTabla();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                actualizarTabla();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                actualizarTabla();
+            }
+        });
+
+    }
+    
+    private void actualizarTabla() {
+        String palabra = jtfFiltro.getText();
+        TableWorker worker = new TableWorker(jtbPalabras, palabra);
         worker.execute();
     }
 
@@ -170,6 +195,7 @@ public class FrameEditor extends javax.swing.JFrame {
 
         FileWorker worker = new FileWorker(lstModelFile, jtbPalabras, jpbProgress);
         worker.execute();
+        actualizarTabla();
 
 
     }//GEN-LAST:event_jbtnGenerarActionPerformed
@@ -267,12 +293,8 @@ public class FrameEditor extends javax.swing.JFrame {
                 TextFile archivo = new TextFile(
                         new File(entrada.get(i).toString()));
                 archivo.procesar();
-                //System.out.println(archivo.getPath());
                 nombre = archivo.getPath();
                 it = archivo.getPalabras();
-                /*while (it.hasNext()) {
-                    System.out.println(it.next().toString());
-                }*/
                 publish((i + 1) * 50 / n);
 
                 try {
@@ -302,7 +324,7 @@ public class FrameEditor extends javax.swing.JFrame {
 
     private class TableWorker extends SwingWorker<Integer, Void> {
 
-        private JTable tabla;
+        private final JTable tabla;
         private final String palabra;
 
         public TableWorker(JTable tabla, String palabra) {
@@ -320,22 +342,7 @@ public class FrameEditor extends javax.swing.JFrame {
                 } else {
                     tbm = dic.consultarPalabras(palabra);
                 }
-//                DefaultTableModel tableModel = new DefaultTableModel();
-//                ResultSetMetaData metaData = rs.getMetaData();
-//                
-//                tableModel.addColumn("Palabra");
-//                tableModel.addColumn("Cantidad");
-//                tableModel.addColumn("Archivos");
-//                int columnCount = 3;
-//                Object[] row = new Object[columnCount];
-//                while (rs.next()) {
-//                    for (int i = 0; i < columnCount; i++) {
-//                        row[i] = rs.getObject(i + 1);
-//                    }
-//                    tableModel.addRow(row);
-//                }
                 tabla.setModel(tbm);
-                //rs.close();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null,
                         "Error en la base de datos: " + ex.getMessage());

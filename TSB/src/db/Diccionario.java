@@ -116,19 +116,25 @@ public class Diccionario {
     }
 
     public DefaultTableModel consultarPalabras(String palabra) throws SQLException {
-        String sql = "SELECT PALABRAS.palabra AS Palabra, "
-                + "SUM (PALABRAXARCHIVO.cantidad) AS Cantidad, "
-                + "COUNT (PALABRAXARCHIVO.id_archivo) AS Archivos "
-                + "FROM PALABRAS JOIN PALABRAXARCHIVO ON id=id_palabra "
-                + "WHERE Palabra LIKE '"
-                + palabra
-                + "%' GROUP BY Palabra ORDER BY Palabra";
+//        String sql = "SELECT PALABRAS.palabra AS Palabra, "
+//                + "SUM (PALABRAXARCHIVO.cantidad) AS Cantidad, "
+//                + "COUNT (PALABRAXARCHIVO.id_archivo) AS Archivos "
+//                + "FROM PALABRAS JOIN PALABRAXARCHIVO ON id=id_palabra "
+//                + "WHERE Palabra LIKE '"
+//                + palabra
+//                + "%' GROUP BY Palabra ORDER BY Palabra";
         DefaultTableModel tableModel;
         ResultSet rs;
         conectar();
-        try (Statement ps = conn.createStatement(
-                )) {
-            rs = ps.executeQuery(sql);
+        try (PreparedStatement ps = conn.prepareStatement(
+                "SELECT PALABRAS.palabra AS Palabra, "
+                + "SUM (PALABRAXARCHIVO.cantidad) AS Cantidad, "
+                + "COUNT (PALABRAXARCHIVO.id_archivo) AS Archivos "
+                + "FROM PALABRAS JOIN PALABRAXARCHIVO ON id=id_palabra "
+                + "WHERE Palabra LIKE ?"
+                + " GROUP BY Palabra ORDER BY Palabra")) {
+            ps.setString(1, palabra + "%");
+            rs = ps.executeQuery();
             tableModel = new DefaultTableModel();
             ResultSetMetaData metaData = rs.getMetaData();
 
