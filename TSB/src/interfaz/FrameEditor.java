@@ -17,6 +17,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.table.DefaultTableModel;
 import negocio.Palabra;
 import negocio.TextFile;
 
@@ -27,6 +28,7 @@ import negocio.TextFile;
 public class FrameEditor extends javax.swing.JFrame {
 
     private final DefaultListModel lstModelFile;
+    //private final DefaultTableModel tableModel;
 
     /**
      * Creates new form Editor
@@ -34,8 +36,22 @@ public class FrameEditor extends javax.swing.JFrame {
     public FrameEditor() {
         initComponents();
         lstModelFile = new DefaultListModel();
+        //tableModel = new DefaultTableModel();
         jlstArchivos.setModel(lstModelFile);
+        //jtbPalabras.setModel(tableModel);
         jpbProgress.setVisible(false);
+        try {
+            Diccionario dic = new Diccionario();
+            dic.iniciar();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Error en la base de datos: " + ex.getMessage());
+        } catch (ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "No se encontró el driver: " + ex.getMessage());
+        }
+        TableWorker worker = new TableWorker(jtbPalabras, "");
+        worker.execute();
     }
 
     /**
@@ -92,29 +108,12 @@ public class FrameEditor extends javax.swing.JFrame {
 
         jLabel1.setText("Archivos seleccionados:");
 
-        jtbPalabras.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Palabra", "Cantidad", "Archivos"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+        jtfFiltro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jtfFiltroActionPerformed(evt);
             }
         });
+
         jtbPalabras.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(jtbPalabras);
 
@@ -189,6 +188,12 @@ public class FrameEditor extends javax.swing.JFrame {
         lstModelFile.clear();
     }//GEN-LAST:event_jbtnLimpiarActionPerformed
 
+    private void jtfFiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtfFiltroActionPerformed
+        String palabra = jtfFiltro.getText();
+        TableWorker worker = new TableWorker(jtbPalabras, palabra);
+        worker.execute();
+    }//GEN-LAST:event_jtfFiltroActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -237,7 +242,7 @@ public class FrameEditor extends javax.swing.JFrame {
         }
     }
 
-    private class FileWorker extends SwingWorker<Void, Integer> {
+    private class FileWorker extends SwingWorker<Integer, Integer> {
 
         private final DefaultListModel entrada;
         private final JTable salida;
@@ -251,9 +256,9 @@ public class FrameEditor extends javax.swing.JFrame {
         }
 
         @Override
-        protected Void doInBackground() {
+        protected Integer doInBackground() {
             progreso.setVisible(true);
-            
+
             int n = entrada.getSize();
             String nombre;
             Iterator<Palabra> it;
@@ -278,23 +283,66 @@ public class FrameEditor extends javax.swing.JFrame {
                 }
                 publish((i + 1) * 100 / n);
             }
-            Void raw = null;
-            //return s;
-            return raw;
+            return 1;
         }
 
         @Override
         protected void done() {
-            progreso.setVisible(false);
             JOptionPane.showMessageDialog(FrameEditor.this,
                     "Archivos procesados con éxito");
             entrada.clear();
+            progreso.setVisible(false);
         }
 
         @Override
         protected void process(List<Integer> chunks) {
             progreso.setValue(chunks.get(chunks.size() - 1));
         }
+    }
+
+    private class TableWorker extends SwingWorker<Integer, Void> {
+
+        private JTable tabla;
+        private final String palabra;
+
+        public TableWorker(JTable tabla, String palabra) {
+            this.tabla = tabla;
+            this.palabra = palabra;
+        }
+
+        @Override
+        protected Integer doInBackground() throws Exception {
+            DefaultTableModel tbm;
+            try {
+                Diccionario dic = new Diccionario();
+                if ("".equals(palabra)) {
+                    tbm = dic.consultarPalabras();
+                } else {
+                    tbm = dic.consultarPalabras(palabra);
+                }
+//                DefaultTableModel tableModel = new DefaultTableModel();
+//                ResultSetMetaData metaData = rs.getMetaData();
+//                
+//                tableModel.addColumn("Palabra");
+//                tableModel.addColumn("Cantidad");
+//                tableModel.addColumn("Archivos");
+//                int columnCount = 3;
+//                Object[] row = new Object[columnCount];
+//                while (rs.next()) {
+//                    for (int i = 0; i < columnCount; i++) {
+//                        row[i] = rs.getObject(i + 1);
+//                    }
+//                    tableModel.addRow(row);
+//                }
+                tabla.setModel(tbm);
+                //rs.close();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null,
+                        "Error en la base de datos: " + ex.getMessage());
+            }
+            return 1;
+        }
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

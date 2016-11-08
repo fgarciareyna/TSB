@@ -137,18 +137,16 @@ public class HashTable<E extends Comparable>
     private class HashTableIterator implements Iterator<E> {
 
         private int pos;
-        private int contados;
         private Iterator<E> it;
 
         public HashTableIterator() {
             pos = 0;
-            contados = 0;
             it = null;
         }
 
         @Override
         public boolean hasNext() {
-            if (contados >= cantidad) {
+            if (HashTable.this.isEmpty()) {
                 return false;
             }
             if (it == null) {
@@ -156,7 +154,7 @@ public class HashTable<E extends Comparable>
             }
             Iterator<E> tempIt = it;
             int tempPos = pos;
-            while (!tempIt.hasNext() && tempPos < items.length) {
+            while (!tempIt.hasNext() && tempPos < items.length - 1) {
                 tempPos++;
                 tempIt = items[tempPos].iterator();
             }
@@ -176,7 +174,6 @@ public class HashTable<E extends Comparable>
                 pos++;
                 it = items[pos].iterator();
             }
-            contados++;
             return it.next();
         }
 

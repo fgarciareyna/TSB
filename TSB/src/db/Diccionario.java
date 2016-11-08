@@ -7,6 +7,7 @@ package db;
 
 import java.sql.*;
 import java.util.Iterator;
+import javax.swing.table.DefaultTableModel;
 import negocio.Palabra;
 
 /**
@@ -21,13 +22,11 @@ public class Diccionario {
     private void conectar() throws SQLException {
         conn = DriverManager.getConnection("jdbc:sqlite:" + path);
         if (conn != null) {
-            System.out.println("Conectado");
         }
     }
 
     private void cerrar() throws SQLException {
         conn.close();
-        System.out.println("Cerrado");
     }
 
     public void crearTablas() throws SQLException {
@@ -52,9 +51,10 @@ public class Diccionario {
         } catch (SQLException ex) {
             conn.rollback();
             throw ex;
+        } finally {
+            conn.setAutoCommit(true);
+            cerrar();
         }
-        conn.setAutoCommit(true);
-        cerrar();
     }
 
     public void vaciarDiccionario() throws SQLException {
@@ -73,11 +73,84 @@ public class Diccionario {
         } catch (SQLException ex) {
             conn.rollback();
             throw ex;
+        } finally {
+            conn.setAutoCommit(true);
+            cerrar();
         }
-        conn.setAutoCommit(true);
-        cerrar();
-
         crearTablas();
+    }
+
+    public DefaultTableModel consultarPalabras() throws SQLException {
+        DefaultTableModel tableModel;
+        ResultSet rs;
+        conectar();
+        try (PreparedStatement ps = conn.prepareStatement(
+                "SELECT PALABRAS.palabra AS Palabra, "
+                + "SUM (PALABRAXARCHIVO.cantidad) AS Cantidad, "
+                + "COUNT (PALABRAXARCHIVO.id_archivo) AS Archivos "
+                + "FROM PALABRAS JOIN PALABRAXARCHIVO ON id=id_palabra "
+                + "GROUP BY Palabra ORDER BY Palabra")) {
+            rs = ps.executeQuery();
+            tableModel = new DefaultTableModel();
+            ResultSetMetaData metaData = rs.getMetaData();
+
+            int columnCount = metaData.getColumnCount();
+
+            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                tableModel.addColumn(metaData.getColumnLabel(columnIndex));
+            }
+            Object[] row = new Object[columnCount];
+            while (rs.next()) {
+                for (int i = 0; i < columnCount; i++) {
+                    row[i] = rs.getObject(i + 1);
+                }
+                tableModel.addRow(row);
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            throw ex;
+        } finally {
+            cerrar();
+        }
+        return tableModel;
+    }
+
+    public DefaultTableModel consultarPalabras(String palabra) throws SQLException {
+        String sql = "SELECT PALABRAS.palabra AS Palabra, "
+                + "SUM (PALABRAXARCHIVO.cantidad) AS Cantidad, "
+                + "COUNT (PALABRAXARCHIVO.id_archivo) AS Archivos "
+                + "FROM PALABRAS JOIN PALABRAXARCHIVO ON id=id_palabra "
+                + "WHERE Palabra LIKE '"
+                + palabra
+                + "%' GROUP BY Palabra ORDER BY Palabra";
+        DefaultTableModel tableModel;
+        ResultSet rs;
+        conectar();
+        try (Statement ps = conn.createStatement(
+                )) {
+            rs = ps.executeQuery(sql);
+            tableModel = new DefaultTableModel();
+            ResultSetMetaData metaData = rs.getMetaData();
+
+            int columnCount = metaData.getColumnCount();
+
+            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                tableModel.addColumn(metaData.getColumnLabel(columnIndex));
+            }
+            Object[] row = new Object[columnCount];
+            while (rs.next()) {
+                for (int i = 0; i < columnCount; i++) {
+                    row[i] = rs.getObject(i + 1);
+                }
+                tableModel.addRow(row);
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            throw ex;
+        } finally {
+            cerrar();
+        }
+        return tableModel;
     }
 
     public void procesarArchivo(String archivo, Iterator<Palabra> it)
@@ -100,20 +173,21 @@ public class Diccionario {
                 PreparedStatement insPalabraXArchivo = conn.prepareStatement(
                         "INSERT INTO PALABRAXARCHIVO(id_palabra,id_archivo,"
                         + "cantidad) VALUES(?,?,?)")) {
-            
+
             consArchivo.setString(1, archivo);
             rs = consArchivo.executeQuery();
             if (rs.next()) {
                 conn.setAutoCommit(true);
+                cerrar();
                 return;
             }
-            
+
             insArchivo.setString(1, archivo);
             insArchivo.executeUpdate();
             rs = consArchivo.executeQuery();
             rs.next();
             idArchivo = rs.getInt("id");
-            
+
             while (it.hasNext()) {
                 p = it.next();
                 palabra = p.getPalabra();
@@ -132,23 +206,22 @@ public class Diccionario {
                 insPalabraXArchivo.setInt(3, cantidad);
                 insPalabraXArchivo.executeUpdate();
             }
-            
+
             conn.commit();
             rs.close();
 
         } catch (SQLException ex) {
             conn.rollback();
             throw ex;
+        } finally {
+            conn.setAutoCommit(true);
+            cerrar();
         }
-        conn.setAutoCommit(true);
-        cerrar();
     }
 
-    public static void main(String[] args)
-            throws ClassNotFoundException, SQLException {
-
+    public void iniciar() throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
-
         Diccionario dic = new Diccionario();
+        dic.crearTablas();
     }
 }
